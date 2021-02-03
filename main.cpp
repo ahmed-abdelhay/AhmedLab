@@ -156,6 +156,42 @@ CreateMatrix(size_t rows, size_t cols)
     return result;
 }
 
+internal Matrix
+Zeros(size_t rows, size_t cols)
+{
+    Matrix result = CreateMatrix(rows, cols);
+    for (size_t i = 0; i < result.dims[0] * result.dims[1]; ++i)
+    {
+        result.data[i] = 0;
+    }
+    return result;
+}
+
+internal Matrix
+Ones(size_t rows, size_t cols)
+{
+    Matrix result = CreateMatrix(rows, cols);
+    for (size_t i = 0; i < result.dims[0] * result.dims[1]; ++i)
+    {
+        result.data[i] = 1;
+    }
+    return result;
+}
+
+internal Matrix
+Eye(size_t rows, size_t cols)
+{
+    Matrix result = CreateMatrix(rows, cols);
+    for (size_t i = 0; i < result.dims[0]; ++i)
+    {
+        for (size_t j = 0; j < result.dims[1]; ++j)
+        {
+            At(result, i, j) = (i == j) ? 1 : 0;
+        }
+    }
+    return result;
+}
+
 internal void
 FreeMatrix(Matrix& m)
 {
@@ -239,6 +275,74 @@ Abs(const Matrix& m)
     }
     return result;
 }
+
+internal Matrix
+Sin(const Matrix& m)
+{
+    Matrix result = CreateMatrix(m.dims[0], m.dims[1]);
+    for (size_t i = 0; i < result.dims[0] * result.dims[1]; ++i)
+    {
+        result.data[i] = sin(m.data[i]);
+    }
+    return result;
+}
+
+internal Matrix
+Cos(const Matrix& m)
+{
+    Matrix result = CreateMatrix(m.dims[0], m.dims[1]);
+    for (size_t i = 0; i < result.dims[0] * result.dims[1]; ++i)
+    {
+        result.data[i] = cos(m.data[i]);
+    }
+    return result;
+}
+
+internal Matrix
+Tan(const Matrix& m)
+{
+    Matrix result = CreateMatrix(m.dims[0], m.dims[1]);
+    for (size_t i = 0; i < result.dims[0] * result.dims[1]; ++i)
+    {
+        result.data[i] = tan(m.data[i]);
+    }
+    return result;
+}
+
+internal Matrix
+ASin(const Matrix& m)
+{
+    Matrix result = CreateMatrix(m.dims[0], m.dims[1]);
+    for (size_t i = 0; i < result.dims[0] * result.dims[1]; ++i)
+    {
+        result.data[i] = asin(m.data[i]);
+    }
+    return result;
+}
+
+internal Matrix
+ACos(const Matrix& m)
+{
+    Matrix result = CreateMatrix(m.dims[0], m.dims[1]);
+    for (size_t i = 0; i < result.dims[0] * result.dims[1]; ++i)
+    {
+        result.data[i] = acos(m.data[i]);
+    }
+    return result;
+}
+
+internal Matrix
+ATan(const Matrix& m)
+{
+    Matrix result = CreateMatrix(m.dims[0], m.dims[1]);
+    for (size_t i = 0; i < result.dims[0] * result.dims[1]; ++i)
+    {
+        result.data[i] = atan(m.data[i]);
+    }
+    return result;
+}
+
+
 // end math.
 
 // state
