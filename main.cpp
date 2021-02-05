@@ -4,8 +4,8 @@ int main(int argc, char const* argv[])
 {
     if (argc == 2)
     {
-        MemoryBlock fileData;
-        if (ReadFile(argv[1], fileData))
+        MemoryBlock fileData = ReadFile(argv[1]);
+        if (fileData.size)
         {
             defer(Deallocate(fileData));
             State state;
