@@ -54,16 +54,11 @@
  *      Provides a cross platform UUID generation function and compare.
  * - File I/O:
  *      Provides a cross platform way of handling files.
- *      - Read whole file           ReadFile(const char* fileName, Allocator&
- * allocator);
- *      - Write whole file          WriteFile(const char* fileName, MemoryBlock
- * block, Allocator& allocator);
- *      - Check if a file exists    DoesFileExist(const char* fileName,
- * Allocator& allocator);
- *      - Get the file size         GetFileSize(const char* fileName, Allocator&
- * allocator);
- *      - Check a path type         GetPathType(const char* path, Allocator&
- * allocator);
+ *      - Read whole file           ReadFile(const char* fileName, Allocator& allocator);
+ *      - Write whole file          WriteFile(const char* fileName, MemoryBlock block, Allocator& allocator);
+ *      - Check if a file exists    DoesFileExist(const char* fileName,Allocator& allocator);
+ *      - Get the file size         GetFileSize(const char* fileName, Allocator& allocator);
+ *      - Check a path type         GetPathType(const char* path, Allocator& allocator);
  * - Strings:
  *      Provides custom implementation of both String (owning container) and
  * StringView (non owning view). it uses the Allocator* interface for managing
@@ -83,10 +78,10 @@
  * - Bitmaps:
  *      Provide a way of creating bitmap (colored and mono) and blit data to the
  * bitmap, it also provide some util for creating colors, rect, and define some
- * common colors. Blit functions: FillRectangle(ColorBitmap& dest, Rect
- * fillArea, const ColorBitmap& src); FillRectangle(ColorBitmap& dest, Rect
- * fillArea, const Bitmap& mask, Color c); FillRectangle(ColorBitmap& dest, Rect
- * fillArea, Color color);
+ * common colors. Blit functions: 
+ *          FillRectangle(ColorBitmap& dest, Rect fillArea, const ColorBitmap& src);
+ *          FillRectangle(ColorBitmap& dest, Rect fillArea, const Bitmap& mask, Color c);
+ *          FillRectangle(ColorBitmap& dest, Rect fillArea, Color color);
  * - Timer:
  *      Provide a way of measuring time between 2 points and then getting this
  * time. it also defines a MACRO  GEDO_TIME_BLOCK(BlockName) that can be used to

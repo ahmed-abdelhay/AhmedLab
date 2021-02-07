@@ -1034,6 +1034,50 @@ namespace gedo
         return true;
     }
 
+    bool StringToInt(const char* string, int64_t& result)
+    {
+        const size_t length = StringLength(string);
+        if (!length)
+        {
+            return false;
+        }
+
+        bool isNegative = false;
+
+        for (size_t i = 0; i < length; ++i)
+        {
+            if (string[i] == '-')
+            {
+                if (isNegative)
+                {
+                    return false;
+                }
+                isNegative = true;
+            }
+        }
+
+        result = 0.0;
+        size_t power = length - 1;
+        for (size_t i = 0; i < length; ++i)
+        {
+            if (string[i] != '0')
+            {
+                int64_t basePower = 1.0;
+                for (int k = 0; k < power; k++)
+                {
+                    basePower *= 10.0;
+                }
+                result += (string[i] - '0') * basePower;
+            }
+            power--;
+        }
+        if (isNegative)
+        {
+            result *= -1;
+        }
+        return true;
+    }
+
     //------------------------------------------------------------//
 
     //--------------------UUID------------------------------------//
