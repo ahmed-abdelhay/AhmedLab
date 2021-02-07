@@ -459,10 +459,10 @@ namespace gedo
     // end of memory util functions.
 
     GEDO_DEF LinearAllocator* CreateLinearAllocator(size_t bytes);
-    GEDO_DEF void DestroyLinearAllocator(LinearAllocator* allocator);
+    GEDO_DEF void FreeLinearAllocator(LinearAllocator* allocator);
 
     GEDO_DEF MallocAllocator* CreateMallocAllocator();
-    GEDO_DEF void DestroyMallocAllocator(MallocAllocator* allocator);
+    GEDO_DEF void FreeMallocAllocator(MallocAllocator* allocator);
     //------------------------------------------------------------//
 
     //--------------------------------File IO---------------------//
@@ -835,10 +835,10 @@ namespace gedo
     GEDO_DEF void FillRectangle(ColorBitmap& dest, Rect fillArea, Color color);
 
     GEDO_DEF Bitmap CreateBitmap(size_t width, size_t height, Allocator& allocator = GetDefaultAllocator());
-    GEDO_DEF void DestoryBitmap(Bitmap& bitmap, Allocator& allocator = GetDefaultAllocator());
+    GEDO_DEF void FreeBitmap(Bitmap& bitmap, Allocator& allocator = GetDefaultAllocator());
 
     GEDO_DEF ColorBitmap CreateColorBitmap(size_t width, size_t height, Allocator& allocator = GetDefaultAllocator());
-    GEDO_DEF void DestoryColorBitmap(ColorBitmap& bitmap, Allocator& allocator = GetDefaultAllocator());
+    GEDO_DEF void FreeColorBitmap(ColorBitmap& bitmap, Allocator& allocator = GetDefaultAllocator());
 
     GEDO_DEF Color CreateColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
 

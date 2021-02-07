@@ -96,7 +96,7 @@ namespace gedo
         return allocator;
     }
 
-    void DestroyLinearAllocator(LinearAllocator* allocator)
+    void FreeLinearAllocator(LinearAllocator* allocator)
     {
         GEDO_ASSERT(allocator);
         GEDO_ASSERT(allocator->arena.data);
@@ -144,7 +144,7 @@ namespace gedo
         return allocator;
     }
 
-    void DestroyMallocAllocator(MallocAllocator* allocator)
+    void FreeMallocAllocator(MallocAllocator* allocator)
     {
         GEDO_ASSERT(allocator);
         delete allocator;
@@ -240,7 +240,7 @@ namespace gedo
         return result;
     }
 
-    void DestoryColorBitmap(ColorBitmap& bitmap, Allocator& allocator)
+    void FreeColorBitmap(ColorBitmap& bitmap, Allocator& allocator)
     {
         GEDO_ASSERT(bitmap.data);
         MemoryBlock block;
@@ -261,7 +261,7 @@ namespace gedo
         return result;
     }
 
-    void DestoryBitmap(Bitmap& bitmap, Allocator& allocator)
+    void FreeBitmap(Bitmap& bitmap, Allocator& allocator)
     {
         GEDO_ASSERT(bitmap.data);
         MemoryBlock block;
@@ -282,7 +282,7 @@ namespace gedo
         size_t size = 0;
     };
 
-    static void DestoryUtf16String(Utf16String& w)
+    static void FreeUtf16String(Utf16String& w)
     {
         if (w.memory.data)
         {
@@ -311,7 +311,7 @@ namespace gedo
             return NULL;
         }
         Utf16String string = UTF8ToUTF16(fileName, allocator);
-        defer(DestoryUtf16String(string));
+        defer(FreeUtf16String(string));
         HANDLE handle = NULL;
         if (read)
         {
@@ -1710,7 +1710,7 @@ namespace gedo
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
         GEDO_ASSERT(hStdout);
         Utf16String string = UTF8ToUTF16(text, GetDefaultAllocator());
-        defer(DestoryUtf16String(string));
+        defer(FreeUtf16String(string));
 
         // Remember how things were when we started
         CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
