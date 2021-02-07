@@ -852,10 +852,18 @@ namespace gedo
     //------------------------------------------------------------//
 
     //---------------------IO-------------------------------------//
+    enum class ConsoleColor
+    {
+        WHITE,
+        RED,
+        GREEN,
+        BLUE
+    };
     // utf8 text.
-    GEDO_DEF void PrintToConsole(const char* text, Color color = WHITE);
-    GEDO_DEF void PrintToConsole(char c, Color color = WHITE);
+    GEDO_DEF void PrintToConsole(const char* text, ConsoleColor color = ConsoleColor::WHITE);
+    GEDO_DEF void PrintToConsole(char c, ConsoleColor color = ConsoleColor::WHITE);
     GEDO_DEF void ReadFromConsole(char* buffer, size_t bufferSize);
+    GEDO_DEF void ClearConsole();
     //------------------------------------------------------------//
 
     //-----------------------Time  -------------------------------//

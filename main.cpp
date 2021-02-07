@@ -1,4 +1,5 @@
-#include "AhmedLab.h"
+﻿#include "AhmedLab.h"
+#define PROMPT_TEXT ">>"
 
 int main(int argc, char const* argv[])
 {
@@ -22,7 +23,7 @@ int main(int argc, char const* argv[])
     char input[500] = {};
     for (;;)
     {
-        PrintToConsole(PROMPT_TEXT);
+        PrintToConsole(PROMPT_TEXT, ConsoleColor::GREEN);
         ReadFromConsole(input, sizeof(input));
         ProcessInput(state, input);
     }

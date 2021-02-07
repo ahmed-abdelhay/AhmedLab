@@ -3,12 +3,12 @@
 
 void PrintMessage(MessageLevel level, const char* message)
 {
-    Color c;
+    ConsoleColor c = ConsoleColor::WHITE;
     switch (level)
     {
-    case MessageLevel::INFO:    c = BLUE;   break;
-    case MessageLevel::WARNING: c = YELLOW; break;
-    case MessageLevel::ERROR:   c = RED;    break;
+    case MessageLevel::INFO:    c = ConsoleColor::GREEN;  break;
+    case MessageLevel::WARNING: c = ConsoleColor::BLUE;   break;
+    case MessageLevel::ERROR:   c = ConsoleColor::RED;    break;
     }
     PrintToConsole(message, c);
     PrintToConsole("\n");
@@ -148,31 +148,31 @@ namespace
 
     static const TokenString tokensStrings[]
     {
-        {TokenType::KEYWORD_IF, "if"},
-        {TokenType::KEYWORD_ELIF, "elif"},
-        {TokenType::KEYWORD_FUNC, "func"},
-        {TokenType::KEYWORD_ELSE, "else"},
-        {TokenType::KEYWORD_WHILE, "while"},
-        {TokenType::LOGICAL_GTE, ">="},
-        {TokenType::LOGICAL_LTE, "<="},
-        {TokenType::LOGICAL_EQUALS, "=="},
-        {TokenType::LOGICAL_NOT_EQUALS, "!="},
-        {TokenType::LOGICAL_LT, "<"},
-        {TokenType::LOGICAL_GT, ">"},
-        {TokenType::LOGICAL_NOT, "!"},
-        {TokenType::LOGICAL_AND, "&&"},
-        {TokenType::LOGICAL_OR, "||"},
-        {TokenType::OPERATOR_PLUS, "+"},
-        {TokenType::OPERATOR_MINUS, "-"},
-        {TokenType::OPERATOR_MULTIPLY, "*"},
-        {TokenType::OPERATOR_DIVIDE, "/"},
-        {TokenType::OPERATOR_ASSIGN, "="},
-        {TokenType::LEFT_PARAN, "("},
-        {TokenType::RIGHT_PARAN, ")"},
-        {TokenType::COMMA, ","},
-        {TokenType::SEMICOL, ";"},
-        {TokenType::LEFT_SQUARE_BRACKET, "["},
-        {TokenType::RIGHT_SQUARE_BRACKET, "]"}
+        {TokenType::KEYWORD_IF,             "if"},
+        {TokenType::KEYWORD_ELIF,           "elif"},
+        {TokenType::KEYWORD_FUNC,           "func"},
+        {TokenType::KEYWORD_ELSE,           "else"},
+        {TokenType::KEYWORD_WHILE,          "while"},
+        {TokenType::LOGICAL_GTE,            ">="},
+        {TokenType::LOGICAL_LTE,            "<="},
+        {TokenType::LOGICAL_EQUALS,         "=="},
+        {TokenType::LOGICAL_NOT_EQUALS,     "!="},
+        {TokenType::LOGICAL_LT,             "<"},
+        {TokenType::LOGICAL_GT,             ">"},
+        {TokenType::LOGICAL_NOT,            "!"},
+        {TokenType::LOGICAL_AND,            "&&"},
+        {TokenType::LOGICAL_OR,             "||"},
+        {TokenType::OPERATOR_PLUS,          "+"},
+        {TokenType::OPERATOR_MINUS,         "-"},
+        {TokenType::OPERATOR_MULTIPLY,      "*"},
+        {TokenType::OPERATOR_DIVIDE,        "/"},
+        {TokenType::OPERATOR_ASSIGN,        "="},
+        {TokenType::LEFT_PARAN,             "("},
+        {TokenType::RIGHT_PARAN,            ")"},
+        {TokenType::COMMA,                  ","},
+        {TokenType::SEMICOL,                ";"},
+        {TokenType::LEFT_SQUARE_BRACKET,    "["},
+        {TokenType::RIGHT_SQUARE_BRACKET,   "]"}
     };
 }
 

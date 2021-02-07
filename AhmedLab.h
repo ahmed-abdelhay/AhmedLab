@@ -1,6 +1,4 @@
-#pragma once
-#include "Gedo.h"
-/*
+﻿/*
 TODO:
 - Finish lexer.
 - Finish parser.
@@ -13,7 +11,9 @@ TODO:
 - Add read, write support.
 */
 
-#define PROMPT_TEXT ">>"
+#pragma once
+#include "Gedo.h"
+
 using namespace gedo;
 
 //-----------------------state-------------------------------

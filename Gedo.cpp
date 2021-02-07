@@ -1,8 +1,6 @@
 ﻿#include "Gedo.h"
 
 #include <math.h>
-// TODO(Ahmed): Remove.
-#include <stdio.h>
 
 #if defined GEDO_OS_WINDOWS
 #define UNICODE
@@ -19,6 +17,7 @@
 #undef VC_EXTRALEAN
 #elif defined GEDO_OS_LINUX
 #include <time.h>
+#include <stdio.h>
 #include <uuid/uuid.h> // user will have to link against libuuid.
 #include <sys/stat.h>
 #include <stdio.h>
@@ -276,15 +275,33 @@ namespace gedo
 
     //--------------------------------File IO---------------------//
 #if defined GEDO_OS_WINDOWS
-    static MemoryBlock UTF8ToUTF16(const char* fileName, Allocator& allocator)
+    struct Utf16String
+    {
+        Allocator* allocator = &GetDefaultAllocator();
+        MemoryBlock memory;
+        wchar_t* text = NULL;
+        size_t size = 0;
+    };
+
+    static void DestoryUtf16String(Utf16String& w)
+    {
+        if (w.memory.data)
+        {
+            Deallocate(w.memory, *w.allocator);
+        }
+    }
+    static Utf16String UTF8ToUTF16(const char* fileName, Allocator& allocator)
     {
         const size_t len = strlen(fileName);
         const size_t wlen = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, fileName, len, NULL, 0);
-        MemoryBlock data = Allocate(sizeof(wchar_t) * (wlen + 1), allocator);
-        wchar_t* utf16 = (wchar_t*)data.data;
-        utf16[wlen] = 0;
-        MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, fileName, len, utf16, wlen);
-        return data;
+        Utf16String result;
+        result.allocator = &allocator;
+        result.memory = Allocate(sizeof(wchar_t) * (wlen + 1), allocator);
+        result.text = (wchar_t*)result.memory.data;
+        result.size = wlen;
+        ZeroMemoryBlock(result.memory);
+        MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, fileName, len, result.text, result.size);
+        return result;
     }
 
     static HANDLE GetFileHandle(const char* fileName, bool read, Allocator& allocator)
@@ -293,13 +310,12 @@ namespace gedo
         {
             return NULL;
         }
-        MemoryBlock utf16Memory = UTF8ToUTF16(fileName, allocator);
-        defer(Deallocate(utf16Memory));
-        wchar_t* text = (wchar_t*)utf16Memory.data;
+        Utf16String string = UTF8ToUTF16(fileName, allocator);
+        defer(DestoryUtf16String(string));
         HANDLE handle = NULL;
         if (read)
         {
-            handle = CreateFile(text,            // file to open
+            handle = CreateFile(string.text,     // file to open
                                 GENERIC_READ,    // open for reading
                                 FILE_SHARE_READ, // share for reading
                                 NULL,            // default security
@@ -309,7 +325,7 @@ namespace gedo
         }
         else
         {
-            handle = CreateFile(text,                  // name of the write
+            handle = CreateFile(string.text,           // name of the write
                                 GENERIC_WRITE,         // open for writing
                                 0,                     // do not share
                                 NULL,                  // default security
@@ -933,7 +949,8 @@ namespace gedo
         if (IsLetter(Peek(buffer)))
         {
             result.clear();
-            while (buffer.cursor < buffer.size && IsLetterOrDigit(Peek(buffer)))
+            while (buffer.cursor < buffer.size &&
+                   (IsLetterOrDigit(Peek(buffer)) || Peek(buffer) == '_'))
             {
                 Append(result, Peek(buffer));
                 buffer.cursor++;
@@ -1688,16 +1705,79 @@ namespace gedo
     //----------------------------------------------------------//
 
     //------------------------IO-------------------------------//
-    void PrintToConsole(const char* text, Color color)
+#if defined (GEDO_OS_WINDOWS)
+    void PrintToConsole(const char* text, ConsoleColor color)
     {
-        //TODO(Ahmed): make this cross platform and add support to color.
-        printf(text);
+        HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+        GEDO_ASSERT(hStdout);
+        Utf16String string = UTF8ToUTF16(text, GetDefaultAllocator());
+        defer(DestoryUtf16String(string));
+
+        // Remember how things were when we started
+        CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+        GetConsoleScreenBufferInfo(hStdout, &consoleInfo);
+        defer(SetConsoleTextAttribute(hStdout, consoleInfo.wAttributes));
+
+        int attributes = consoleInfo.wAttributes;
+        switch (color)
+        {
+        case ConsoleColor::WHITE:  break;
+        case ConsoleColor::RED:   attributes = FOREGROUND_RED;   break;
+        case ConsoleColor::BLUE:  attributes = FOREGROUND_BLUE;  break;
+        case ConsoleColor::GREEN: attributes = FOREGROUND_GREEN; break;
+        }
+        SetConsoleTextAttribute(hStdout, attributes);
+
+        DWORD written = 0;
+        WriteConsoleW(hStdout, string.text, string.size, &written, NULL);
     }
 
-    void PrintToConsole(char c, Color color)
+    void ReadFromConsole(char* buffer, size_t bufferSize)
     {
-        //TODO(Ahmed): make this cross platform and add support to color.
-        printf("%c", c);
+        HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+        GEDO_ASSERT(hStdin);
+        DWORD read = 0;
+        ReadConsoleA(hStdin, buffer, bufferSize, &read, NULL);
+        if (read >= 2 && buffer[read - 1] == '\n' && buffer[read - 2] == '\r')
+        {
+            buffer[read - 2] = 0;
+        }
+    }
+
+    void ClearConsole()
+    {
+        HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+        GEDO_ASSERT(hStdout);
+
+        DWORD mode = 0;
+        GetConsoleMode(hStdout, &mode);
+        const DWORD originalMode = mode;
+        defer(SetConsoleMode(hStdout, originalMode));
+
+        mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+        SetConsoleMode(hStdout, mode);
+
+        DWORD written = 0;
+        WCHAR sequence[] = L"\x1b[2J";
+        WriteConsoleW(hStdout, sequence, ARRAYSIZE(sequence), &written, NULL);
+    }
+#elif defined (GEDO_OS_LINUX)
+    void PrintToConsole(const char* text, ConsoleColor color)
+    {
+        const char* RESET = "\033[0m";
+        const char* RED = "\033[31m";
+        const char* GREEN = "\033[32m";
+        const char* BLUE = "\033[34m";
+        const char* WHITE = "\033[37m";
+        switch (color)
+        {
+        case ConsoleColor::WHITE: printf(WHITE); break;
+        case ConsoleColor::RED:   printf(RED);   break;
+        case ConsoleColor::BLUE:  printf(BLUE);  break;
+        case ConsoleColor::GREEN: printf(GREEN); break;
+        }
+        printf(text);
+        printf(RESET);
     }
 
     void ReadFromConsole(char* buffer, size_t bufferSize)
@@ -1705,6 +1785,17 @@ namespace gedo
         fgets(buffer, bufferSize, stdin);
     }
 
+    void ClearConsole()
+    {
+        printf("\e[1;1H\e[2J");
+    }
+#endif
+    void PrintToConsole(char c, ConsoleColor color)
+    {
+        char text[2] = {};
+        text[0] = c;
+        PrintToConsole(text, color);
+    }
     //----------------------------------------------------------//
 
     //------------------------Time-------------------------------//
