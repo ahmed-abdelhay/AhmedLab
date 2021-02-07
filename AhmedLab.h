@@ -82,12 +82,10 @@ enum class TokenType
 struct Token
 {
     TokenType type;
-    struct
-    {
-        String name;            // when type == IDENTIFIER.
-        double numericLiteral;  // when type == NUMERIC_LITERAL.
-        String stringLiteral;   // when type == STRING_LITERAL.
-    };
+    // data.
+    String name;            // when type == IDENTIFIER.
+    double numericLiteral;  // when type == NUMERIC_LITERAL.
+    String stringLiteral;   // when type == STRING_LITERAL.
 };
 
 struct LexerResult

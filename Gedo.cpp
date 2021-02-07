@@ -20,7 +20,6 @@
 #include <stdio.h>
 #include <uuid/uuid.h> // user will have to link against libuuid.
 #include <sys/stat.h>
-#include <stdio.h>
 #else
 #error "Not supported OS"
 #endif
@@ -290,6 +289,7 @@ namespace gedo
             Deallocate(w.memory, *w.allocator);
         }
     }
+
     static Utf16String UTF8ToUTF16(const char* fileName, Allocator& allocator)
     {
         const size_t len = strlen(fileName);
@@ -622,7 +622,6 @@ namespace gedo
     {
         string.push_back(c);
     }
-
 
     StringView CreateStringView(const char* string)
     {
@@ -1764,20 +1763,26 @@ namespace gedo
 #elif defined (GEDO_OS_LINUX)
     void PrintToConsole(const char* text, ConsoleColor color)
     {
-        const char* RESET = "\033[0m";
-        const char* RED = "\033[31m";
-        const char* GREEN = "\033[32m";
-        const char* BLUE = "\033[34m";
-        const char* WHITE = "\033[37m";
+#define GEDO_CONSOLE_COLOR_RESET  "\033[0m"
+#define GEDO_CONSOLE_COLOR_RED    "\033[31m"
+#define GEDO_CONSOLE_COLOR_GREEN  "\033[32m"
+#define GEDO_CONSOLE_COLOR_BLUE   "\033[34m"
+#define GEDO_CONSOLE_COLOR_WHITE  "\033[37m"
         switch (color)
         {
-        case ConsoleColor::WHITE: printf(WHITE); break;
-        case ConsoleColor::RED:   printf(RED);   break;
-        case ConsoleColor::BLUE:  printf(BLUE);  break;
-        case ConsoleColor::GREEN: printf(GREEN); break;
+        case ConsoleColor::WHITE: printf(GEDO_CONSOLE_COLOR_WHITE); break;
+        case ConsoleColor::RED:   printf(GEDO_CONSOLE_COLOR_RED);   break;
+        case ConsoleColor::BLUE:  printf(GEDO_CONSOLE_COLOR_BLUE);  break;
+        case ConsoleColor::GREEN: printf(GEDO_CONSOLE_COLOR_GREEN); break;
         }
         printf(text);
-        printf(RESET);
+        printf(GEDO_CONSOLE_COLOR_RESET);
+
+#undef GEDO_CONSOLE_COLOR_RESET
+#undef GEDO_CONSOLE_COLOR_RED
+#undef GEDO_CONSOLE_COLOR_GREEN
+#undef GEDO_CONSOLE_COLOR_BLUE
+#undef GEDO_CONSOLE_COLOR_WHITE
     }
 
     void ReadFromConsole(char* buffer, size_t bufferSize)

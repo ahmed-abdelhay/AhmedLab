@@ -414,7 +414,7 @@ namespace gedo
     //-----------------Memory --------------------------//
     struct MemoryBlock
     {
-        uint8_t* data = nullptr;
+        uint8_t* data = NULL;
         size_t size = 0;
     };
 
@@ -795,6 +795,7 @@ namespace gedo
     GEDO_DEF bool CompareWordAndSkip(Buffer& buffer, const char* word);
 
     GEDO_DEF bool StringToFloat(const char* string, double& result);
+    GEDO_DEF bool StringToInt(const char* string, int64_t& result);
     //-------------------------------------------------------------//
 
     //------------------------------Bitmap-------------------------//
