@@ -14,8 +14,6 @@ TODO:
 */
 
 #define PROMPT_TEXT ">>"
-#define MAX_VARIABLES 255
-#define MAX_VARIABLE_NAME 30
 using namespace gedo;
 
 //-----------------------state-------------------------------
@@ -27,8 +25,7 @@ struct Variable
 
 struct State
 {
-    Variable vars[MAX_VARIABLES] = {};
-    size_t varsCount = 0;
+    Array<Variable> vars;
 };
 
 enum class MessageLevel
@@ -50,6 +47,8 @@ void DeleteVariable(State& state, const char* name);
 enum class TokenType
 {
     KEYWORD_IF,
+    KEYWORD_ELIF,
+    KEYWORD_FUNC,
     KEYWORD_ELSE,
     KEYWORD_WHILE,
     IDENTIFIER,

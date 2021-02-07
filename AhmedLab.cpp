@@ -1,17 +1,6 @@
 #include "AhmedLab.h"
 #include <stdio.h>
 
-char* DuplicateString(const char* text)
-{
-    const size_t len = StringLength(text);
-    char* result = (char*)Allocate(len + 1).data;
-    for (size_t i = 0; i < len; i++)
-    {
-        result[i] = text[i];
-    }
-    return result;
-}
-
 void PrintMessage(MessageLevel level, const char* message)
 {
     Color c;
@@ -27,11 +16,11 @@ void PrintMessage(MessageLevel level, const char* message)
 
 const Variable* FindVariable(const State& state, const char* name)
 {
-    for (size_t i = 0; i < state.varsCount; i++)
+    for (const Variable& var : state.vars)
     {
-        if (CompareStrings(name, state.vars[i].name))
+        if (CompareStrings(name, var.name))
         {
-            return &state.vars[i];
+            return &var;
         }
     }
     return NULL;
@@ -39,11 +28,11 @@ const Variable* FindVariable(const State& state, const char* name)
 
 Variable* FindVariable(State& state, const char* name)
 {
-    for (size_t i = 0; i < state.varsCount; i++)
+    for (Variable& var : state.vars)
     {
-        if (CompareStrings(name, state.vars[i].name))
+        if (CompareStrings(name, var.name))
         {
-            return &state.vars[i];
+            return &var;
         }
     }
     return NULL;
@@ -114,8 +103,8 @@ Variable* AddVariable(State& state, const char* name, Matrix data)
         Variable newVar = {};
         newVar.value = data;
         newVar.name = CreateString(name);
-        state.vars[state.varsCount++] = newVar;
-        return &state.vars[state.varsCount - 1];
+        state.vars.push_back(newVar);
+        return &state.vars[state.vars.size() - 1];
     }
 }
 
@@ -124,11 +113,11 @@ void DeleteVariable(State& state, const char* name)
     Variable* var = FindVariable(state, name);
     if (var)
     {
-        Variable& lastVar = state.vars[state.varsCount - 1];
+        Variable& lastVar = state.vars[state.vars.size() - 1];
         Swap(lastVar.name, var->name);
         Swap(lastVar.value, var->value);
         FreeMatrix(lastVar.value);
-        state.varsCount--;
+        state.vars.pop_back();
     }
 }
 
@@ -160,6 +149,8 @@ namespace
     static const TokenString tokensStrings[]
     {
         {TokenType::KEYWORD_IF, "if"},
+        {TokenType::KEYWORD_ELIF, "elif"},
+        {TokenType::KEYWORD_FUNC, "func"},
         {TokenType::KEYWORD_ELSE, "else"},
         {TokenType::KEYWORD_WHILE, "while"},
         {TokenType::LOGICAL_GTE, ">="},
