@@ -1,6 +1,5 @@
+#pragma once
 #include "Gedo.h"
-#undef ERROR
-
 /*
 TODO:
 - Finish lexer.
@@ -22,7 +21,7 @@ using namespace gedo;
 //-----------------------state-------------------------------
 struct Variable
 {
-    char* name = NULL;
+    String name;
     Matrix value;
 };
 
@@ -48,12 +47,14 @@ void DeleteVariable(State& state, const char* name);
 //-----------------------------------------------------------
 
 //---------------------------Parsing-------------------------
-enum class ALTokenType
+enum class TokenType
 {
     KEYWORD_IF,
+    KEYWORD_ELSE,
     KEYWORD_WHILE,
     IDENTIFIER,
-    LITERAL,
+    NUMERIC_LITERAL,
+    STRING_LITERAL,
     // logical operators
     LOGICAL_LT,             // <
     LOGICAL_GT,             // >
@@ -81,11 +82,12 @@ enum class ALTokenType
 
 struct Token
 {
-    ALTokenType type;
-    union
+    TokenType type;
+    struct
     {
-        char name[MAX_VARIABLE_NAME];
-        double value;
+        String name;            // when type == IDENTIFIER.
+        double numericLiteral;  // when type == NUMERIC_LITERAL.
+        String stringLiteral;   // when type == STRING_LITERAL.
     };
 };
 
